@@ -1,40 +1,26 @@
 from tkinter import messagebox
 import gestor
 import atendente
+import sqlite3
 
-"""
-Comportamento dos botões da tela de login
+def login(frame, username, pwd):
+    conn = sqlite3.connect('dados/database.db')
+    c = conn.cursor()
 
-arg[0] = sinal de exclusão lógica
-    > arg[0] == 1 - Presente
-    > arg[0] == 0 - Excluído
-
-arg[1] = nível de acesso
-    > arg[1] == 1 - Acesso Gestor
-    > arg[1] == 0 - Acesso Atendente
-
-arg[2] = nome de usuário
-
-arg[3] = senha
-
-"""
-
-def login(frame_login, username, pwd):
-    data = open("dados/usuarios.txt", "r")
-
-    for line in data:
-        arg = line.split()
-        if(arg[0] == "1" and username.get() == arg[2] and pwd.get() == arg[3]):
-            if(arg[1] == "1"):
-                messagebox.showinfo("Login", "Bem-vindo(a)!\n" + "Acesso: Gestor")
-                frame_login.destroy()
-                gestor.show_frame()
-            else:
-                messagebox.showinfo("Login", "Bem-vindo(a)!\n" + "Acesso: Atendente")
-                frame_login.destroy()
-                atendente.show_frame()
-            data.close()
-            return
-
-    data.close()
-    messagebox.showinfo("Login", "Usuário ou senha inválido!")
+    c.execute('SELECT * FROM usuarios WHERE user=? AND password=?', (username.get(), pwd.get()))
+    if c.fetchone() is not None:
+        c.execute('SELECT * FROM usuarios WHERE user=? AND password=? AND acesso=1', (username.get(), pwd.get()))
+        if c.fetchone() is not None:
+            messagebox.showinfo("Login", "Bem-vindo(a)!\n" + "Acesso: Gestor")
+            c.close()
+            conn.close()
+            frame.destroy()
+            gestor.show_frame()
+        else:
+            messagebox.showinfo("Login", "Bem-vindo(a)!\n" + "Acesso: Atendente")
+            c.close()
+            conn.close()
+            frame.destroy()
+            atendente.show_frame()
+    else:
+        messagebox.showinfo("Login", "Usuário ou senha inválido!")

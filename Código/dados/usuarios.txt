@@ -1,2 +1,0 @@
-1 1 gestor gestor
-1 0 atendente atendente

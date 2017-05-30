@@ -2,40 +2,44 @@ from functools import partial
 from tkinter import *
 import login_events as events
 
-def show_frame(frame_login):
+def show_frame(frame):
     #Label Título
-    Label(frame_login, text="Login", font=("Arial", 24)).grid(row=0, column=0, columnspan=2, pady=5)
+    Label(frame, text="Login", font=("Arial", 24)).grid(row=0, column=1, pady=10)
 
     #Comando tecla Enter
-    frame_login.bind("<Return>", (lambda event: events.login(frame_login, username, password)))
+    frame.bind("<Return>", (lambda event: events.login(frame, username, password)))
 
     #Label Usuário
-    user_label = Label(frame_login, text="Usuário:", font=("Arial", 11))
+    user_label = Label(frame, text="Usuário:", font=("Arial", 12))
     user_label.grid(row=1, column=0, pady=2)
 
     #Campo Usuário
-    username = Entry(frame_login, font=("Arial", 12))
-    username.grid(row=1, column=1, pady=2)
+    username = Entry(frame, font=("Arial", 12))
+    username.grid(row=1, column=1, pady=2, sticky=W+E)
 
     #Label Senha
-    password_label = Label(frame_login, text="Senha:", font=("Arial", 12))
+    password_label = Label(frame, text="Senha:", font=("Arial", 12))
     password_label.grid(row=2, column=0, sticky=E, pady=2)
 
     #Campo Senha
-    password = Entry(frame_login, show="*", font=("Arial", 12))
-    password.grid(row=2, column=1, pady=2)
+    password = Entry(frame, show="*", font=("Arial", 12))
+    password.grid(row=2, column=1, pady=2, sticky=W+E)
 
     #Botão Entrar
-    login_button = Button(frame_login, text="Entrar", font=("Arial", 12), height=2, width=10)
-    login_button["command"] = partial(events.login, frame_login, username, password)
-    login_button.grid(row=3, column=1, pady=10, sticky=W)
+    login_button = Button(frame, text="Entrar", font=("Arial", 12))
+    login_button["command"] = partial(events.login, frame, username, password)
+    login_button.grid(row=3, column=1, sticky=W+E)
+
+    #Botão Sair
+    sair = Button(frame, text="Sair", font=("Arial", 12), command=frame.destroy)
+    sair.grid(row=4, column=1, sticky=W+E)
 
 #Mainloop
-frame_login = Tk()
-frame_login.title("Cinema 1.0")
-frame_login.geometry("300x250+600+300")
-show_frame(frame_login)
+frame = Tk()
+frame.title("Cinema 1.0")
+frame.geometry("300x250+500+150")
+show_frame(frame)
 
-Label(frame_login, text="Para fins de teste (user:password)\ngestor:gestor\natendente:atendente").grid(row=4, column=1)
+Label(frame, text="Para fins de teste (user:password)\ngestor:gestor\natendente:atendente").grid(row=5, column=1)
 
-frame_login.mainloop()
+frame.mainloop()

@@ -1,22 +1,47 @@
 from tkinter import *
+from functools import partial
+import filmes
+import funcionarios
+import salas
+
+def filmes_click(frame):
+    frame.destroy()
+    filmes.show_frame()
+
+def funcionarios_click(frame):
+    frame.destroy()
+    funcionarios.show_frame()
+
+def salas_click(frame):
+    frame.destroy()
+    salas.show_frame()
 
 def show_frame():
-    frame_gestor = Tk()
+    frame = Tk()
+
+    Label(frame, text="Gerenciamento Cinema", font=("Arial", 24)).grid(row=0, column=0, padx=75, pady=25)
 
     #Botão Filmes
-    filmes = Button(frame_gestor, text="Gerenciamento de Filmes", font=("Arial", 14))
-    filmes.grid(row=0, column=0, padx=100, pady=50)
+    filmes = Button(frame, text="Filmes", font=("Arial", 14))
+    filmes["command"] = partial(filmes_click, frame)
+    filmes.grid(row=1, column=0, pady=20, sticky=W+E)
 
     #Botão Funcionários
-    funcionarios = Button(frame_gestor, text="Gerenciamento de Funcionários", font=("Arial", 14))
-    funcionarios.grid(row=1, column=0, padx=100, pady=50)
+    funcionarios = Button(frame, text="Funcionários", font=("Arial", 14))
+    funcionarios["command"] = partial(funcionarios_click, frame)
+    funcionarios.grid(row=2, column=0, pady=20, sticky=W+E)
 
     #Botão Salas
-    salas = Button(frame_gestor, text="Gerenciamento de Salas", font=("Arial", 14))
-    salas.grid(row=2, column=0, padx=100, pady=50)
+    salas = Button(frame, text="Salas", font=("Arial", 14))
+    salas["command"] = partial(salas_click, frame)
+    salas.grid(row=3, column=0, pady=20, sticky=W+E)
+
+    #Botão Sair
+    sair = Button(frame, bg="gray75", text="Sair", font=("Arial", 14), command=frame.destroy)
+    sair.grid(row=4, column=0, pady=15, ipadx=8)
 
     #Loop
-    frame_gestor.title("Cinema 1.0")
-    frame_gestor.geometry("500x500+500+300")
+    frame.title("Cinema 1.0")
+    frame.geometry("490x400+500+150")
 
-    frame_gestor.mainloop()
+    frame.mainloop()
