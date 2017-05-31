@@ -36,7 +36,7 @@ def show_frame(frame):
 
 #Mainloop
 frame = Tk()
-frame.title("Cinema 1.0")
+frame.title("Gerenciamento de Cinema")
 frame.geometry("300x250+500+150")
 show_frame(frame)
 

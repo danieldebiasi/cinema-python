@@ -25,7 +25,7 @@ def show_frame():
     scroll.grid(row=2, column=1)
 
 
-    frame.title("Cinema 1.0")
+    frame.title("Gerenciamento de Cinema")
     frame.geometry("500x500+500+300")
 
     frame.mainloop()
