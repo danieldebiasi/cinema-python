@@ -117,7 +117,7 @@ def cadastrar_click(frame):
     voltar.grid(row=13, column=1, sticky=W, ipadx=3)
 
     action.title("Gerenciamento de Cinema")
-    action.geometry("490x380+500+150")
+    action.geometry("490x370+500+150")
     action.mainloop()
 
 def consultar_click(frame):
@@ -161,7 +161,7 @@ def consultar_click(frame):
     voltar.grid(row=6, column=1, sticky=W, ipadx=12)
 
     action.title("Gerenciamento de Cinema")
-    action.geometry("490x320+500+150")
+    action.geometry("490x300+500+150")
     action.mainloop()
 
 def excluir_click(frame):

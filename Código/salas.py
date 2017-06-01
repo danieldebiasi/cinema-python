@@ -14,9 +14,14 @@ def voltar_click(frame, ctrl):
 def registrar(frame, numero):
     conn = sqlite3.connect('dados/database.db')
     c = conn.cursor()
-    c.execute('INSERT INTO salas (numero, status) VALUES(?, ?)', (numero.get(), "Livre"))
-    conn.commit()
+    c.execute('INSERT INTO salas (sala, status) VALUES(?, ?)', (numero.get(), "Livre"))
+    c.execute('INSERT INTO poltronas (sala) VALUES(?)', (numero.get(),))
 
+    for index in range(1, 51):
+        poltrona = "poltrona" + str(index)
+        c.execute('UPDATE poltronas SET {} = ? WHERE sala = ?'.format(poltrona), (0, numero.get()))
+
+    conn.commit()
     messagebox.showinfo("Cadastro de Salas", "Sala cadastrada com sucesso!")
     voltar_click(frame, 1)
 
@@ -25,7 +30,7 @@ def consultar(numero, status):
 
     conn = sqlite3.connect('dados/database.db')
     c = conn.cursor()
-    c.execute('SELECT * FROM salas WHERE numero=?', (numero.get(),))
+    c.execute('SELECT * FROM salas WHERE sala=?', (numero.get(),))
     result = c.fetchone()
 
     if result is not None:
@@ -38,7 +43,7 @@ def consultar(numero, status):
 def deletar(numero, status, excluir):
     conn = sqlite3.connect('dados/database.db')
     c = conn.cursor()
-    c.execute('DELETE FROM salas WHERE numero=?', (numero.get(),))
+    c.execute('DELETE FROM salas WHERE sala=?', (numero.get(),))
     conn.commit()
 
     messagebox.showinfo("Exclusão de Salas", "Sala excluída com sucesso!")
