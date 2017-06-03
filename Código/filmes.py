@@ -20,10 +20,14 @@ def registrar(frame, titulo, genero, clas, hora, sala):
 
     conn.commit()
     messagebox.showinfo("Cadastro de Filmes", "Filme cadastrado com sucesso!")
-    frame.destroy()
-    gestor.show_frame()
+    voltar_click(frame, 1)
 
 def consultar(titulo, genero, clas, horario, sala):
+    genero["text"] = ""
+    clas["text"] = ""
+    horario["text"] = ""
+    sala["text"] = ""
+
     conn = sqlite3.connect('dados/database.db')
     c = conn.cursor()
     c.execute('SELECT * FROM filmes WHERE titulo=?', (titulo.get(),))
@@ -41,6 +45,8 @@ def consultar(titulo, genero, clas, horario, sala):
 def encontrar(titulo, genero, clas, horario, sala, excluir):
     if consultar(titulo, genero, clas, horario, sala) == 1:
         excluir["state"] = NORMAL
+    else:
+        excluir["state"] = DISABLED
 
 def deletar(titulo, genero, clas, horario, sala, excluir):
     conn = sqlite3.connect('dados/database.db')
@@ -108,11 +114,11 @@ def cadastrar_click(frame):
 
     #Botão voltar
     voltar = Button(action, bg="gray75", text="Cancelar", font=("Arial", 12))
-    voltar["command"] = partial(voltar_click, action, 0)
+    voltar["command"] = partial(voltar_click, action, 1)
     voltar.grid(row=11, column=1, sticky=W, ipadx=3)
 
-    action.title("Cinema 1.0")
-    action.geometry("490x430+500+150")
+    action.title("Gerenciamento de Cinema")
+    action.geometry("490x400+500+150")
     action.mainloop()
 
 def consultar_click(frame):
@@ -155,20 +161,20 @@ def consultar_click(frame):
     consultar_bt["command"] = partial(consultar, titulo, genero, clas, hora, sala)
     consultar_bt.grid(row=6, column=1, pady=10, sticky=W)
 
-    # Botão voltar
+    # Botão Voltar
     voltar = Button(action, bg="gray75", text="Voltar", font=("Arial", 12))
     voltar["command"] = partial(voltar_click, action, 1)
     voltar.grid(row=7, column=1, sticky=W, ipadx=12)
 
-    action.title("Cinema 1.0")
-    action.geometry("490x360+500+150")
+    action.title("Gerenciamento de Cinema")
+    action.geometry("490x330+500+150")
     action.mainloop()
 
 def excluir_click(frame):
     frame.destroy()
     action = Tk()
 
-    Label(action, text="Excluir Filme", font=("Arial", 24)).grid(row=0, column=1, padx=90, pady=20)
+    Label(action, text="Excluir Filme", font=("Arial", 24)).grid(row=0, column=1, padx=80, pady=20)
 
     # Campo de Titulo
     titulo_label = Label(action, text="Título:", font=("Arial", 12))
@@ -210,13 +216,13 @@ def excluir_click(frame):
     encontrar_bt["command"] = partial(encontrar, titulo, genero, clas, hora, sala, excluir)
     encontrar_bt.grid(row=1, column=2, padx=5)
 
-    # Botão voltar
+    # Botão Voltar
     voltar = Button(action, bg="gray75", text="Voltar", font=("Arial", 12))
     voltar["command"] = partial(voltar_click, action, 1)
     voltar.grid(row=7, column=1, sticky=W, ipadx=8)
 
-    action.title("Cinema 1.0")
-    action.geometry("520x360+500+150")
+    action.title("Gerenciamento de Cinema")
+    action.geometry("520x330+500+150")
     action.mainloop()
 
 def show_frame():
@@ -241,13 +247,13 @@ def show_frame():
 
     #Botão Voltar
     voltar = Button(frame, bg="gray75", text="Voltar", font=("Arial", 14))
-    voltar["command"] = partial(voltar_click, frame)
+    voltar["command"] = partial(voltar_click, frame, 0)
     voltar.grid(row=4, column=0, pady=15)
 
     #Botão Sair
     sair = Button(frame, bg="gray75", text="Sair", font=("Arial", 14), command=frame.destroy)
     sair.grid(row=5, column=0, ipadx=8)
 
-    frame.title("Cinema 1.0")
+    frame.title("Gerenciamento de Cinema")
     frame.geometry("490x450+500+150")
     frame.mainloop()

@@ -41,7 +41,7 @@ def show_frame():
     sair.grid(row=4, column=0, pady=15, ipadx=8)
 
     #Loop
-    frame.title("Cinema 1.0")
+    frame.title("Gerenciamento de Cinema")
     frame.geometry("490x400+500+150")
 
     frame.mainloop()

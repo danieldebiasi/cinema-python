@@ -26,7 +26,7 @@ def show_frame(frame):
     password.grid(row=2, column=1, pady=2, sticky=W+E)
 
     #Botão Entrar
-    login_button = Button(frame, text="Entrar", font=("Arial", 12))
+    login_button = Button(frame, text="Entrar", font=("Arial", 12, "bold"))
     login_button["command"] = partial(events.login, frame, username, password)
     login_button.grid(row=3, column=1, sticky=W+E)
 
@@ -36,7 +36,7 @@ def show_frame(frame):
 
 #Mainloop
 frame = Tk()
-frame.title("Cinema 1.0")
+frame.title("Gerenciamento de Cinema")
 frame.geometry("300x250+500+150")
 show_frame(frame)
 
