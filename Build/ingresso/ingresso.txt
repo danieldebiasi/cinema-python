@@ -1,0 +1,5 @@
+FILME: Filme 1
+SESSÃO: 14:20
+SALA: 1
+POLTRONA: 5
+INGRESSO: Inteira
