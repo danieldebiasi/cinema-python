@@ -14,7 +14,7 @@ def show_frame(frame):
     user_label.grid(row=1, column=0, pady=2)
 
     #Campo Usuário
-    username = Entry(frame, font=("Arial", 12))
+    username = Entry(frame, font=("Arial", 12), validate="key")
     username.grid(row=1, column=1, pady=2, sticky=W+E)
 
     #Label Senha
@@ -34,12 +34,11 @@ def show_frame(frame):
     sair = Button(frame, text="Sair", font=("Arial", 12), command=frame.destroy)
     sair.grid(row=4, column=1, sticky=W+E)
 
-#Mainloop
+
 frame = Tk()
 frame.title("Gerenciamento de Cinema")
-frame.geometry("300x250+500+150")
+frame.iconbitmap(r'icon.ico')
+frame.geometry("300x200+500+150")
 show_frame(frame)
-
-Label(frame, text="Para fins de teste (user:password)\ngestor:gestor\natendente:atendente").grid(row=5, column=1)
 
 frame.mainloop()

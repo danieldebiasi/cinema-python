@@ -12,20 +12,30 @@ def voltar_click(frame, ctrl):
         show_frame()
 
 def registrar(frame, numero):
-    conn = sqlite3.connect('dados/database.db')
-    c = conn.cursor()
-    c.execute('INSERT INTO salas (sala, status) VALUES(?, ?)', (numero.get(), "Livre"))
-    c.execute('INSERT INTO poltronas (sala) VALUES(?)', (numero.get(),))
+    if not numero.get().isdigit():
+        messagebox.showinfo("Erro", "Apenas caracteres numéricos!")
 
-    for index in range(1, 51):
-        poltrona = "poltrona" + str(index)
-        c.execute('UPDATE poltronas SET {} = ? WHERE sala = ?'.format(poltrona), (0, numero.get()))
+    else:
+        conn = sqlite3.connect('dados/database.db')
+        c = conn.cursor()
+        c.execute('SELECT * FROM salas WHERE sala=?', (numero.get()))
 
-    conn.commit()
-    messagebox.showinfo("Cadastro de Salas", "Sala cadastrada com sucesso!")
-    voltar_click(frame, 1)
+        if c.fetchone() is None:
+            c.execute('INSERT INTO salas (sala, status) VALUES(?, ?)', (numero.get(), "Livre"))
+            c.execute('INSERT INTO poltronas (sala, livres) VALUES(?, ?)', (numero.get(), 50))
 
-def consultar(numero, status):
+            for index in range(1, 51):
+                poltrona = "poltrona" + str(index)
+                c.execute('UPDATE poltronas SET {} = ? WHERE sala = ?'.format(poltrona), (0, numero.get()))
+
+            conn.commit()
+            messagebox.showinfo("Cadastro de Salas", "Sala cadastrada com sucesso!")
+            voltar_click(frame, 1)
+
+        else:
+            messagebox.showinfo("Erro", "Sala já cadastrada!")
+
+def consultar(numero, status, resetar_bt):
     status["text"] = ""
 
     conn = sqlite3.connect('dados/database.db')
@@ -35,6 +45,7 @@ def consultar(numero, status):
 
     if result is not None:
         status["text"] = result[1]
+        resetar_bt["state"] = NORMAL
         return 1
     else:
         messagebox.showinfo("Consulta de Salas", "Nenhuma sala encontrada!")
@@ -43,10 +54,25 @@ def consultar(numero, status):
 def deletar(numero, status, excluir):
     conn = sqlite3.connect('dados/database.db')
     c = conn.cursor()
-    c.execute('DELETE FROM salas WHERE sala=?', (numero.get(),))
-    conn.commit()
 
-    messagebox.showinfo("Exclusão de Salas", "Sala excluída com sucesso!")
+    if status["text"] == "Em uso":
+        c.execute('SELECT * FROM salas WHERE sala=?', (numero.get()))
+        result = c.fetchone()
+        message = "Sala em uso. Exclua o filme '"+result[2]+"' antes de excluir a sala!"
+        messagebox.showinfo("Atenção", message)
+
+    else:
+        confirmar = "Confirmar exclusão da sala?"
+        result = messagebox.askyesno("Exclusão de Salas", confirmar)
+        if result:
+            c.execute('DELETE FROM salas WHERE sala=?', (numero.get(),))
+            c.execute('DELETE FROM poltronas WHERE sala=?', (numero.get()))
+            conn.commit()
+
+            messagebox.showinfo("Exclusão de Salas", "Sala excluída com sucesso!")
+        else:
+            messagebox.showinfo("Exclusão de Salas", "Exclusão cancelada")
+
     status["text"] = ""
     excluir["state"] = DISABLED
 
@@ -55,6 +81,25 @@ def encontrar(numero, status, excluir):
         excluir["state"] = NORMAL
     else:
         excluir["state"] = DISABLED
+
+def resetar(numero, resetar_bt):
+    result = messagebox.askyesno("Resetar sala", "Deseja resetar todas as poltronas?")
+    if result:
+        conn = sqlite3.connect('dados/database.db')
+        c = conn.cursor()
+
+        for index in range(1,51):
+            poltrona = "poltrona"+str(index)
+            c.execute('UPDATE poltronas SET {} = ? WHERE sala = ?'.format(poltrona), (0, numero.get()))
+
+        c.execute('UPDATE poltronas SET livres = 50 WHERE sala = ?', (numero.get(),))
+        conn.commit()
+        messagebox.showinfo("Resetar sala", "Poltronas resetadas!")
+
+    else:
+        messagebox.showinfo("Resetar sala", "Reset cancelado")
+
+    resetar_bt["state"] = DISABLED
 
 def cadastrar_click(frame):
     frame.destroy()
@@ -84,6 +129,7 @@ def cadastrar_click(frame):
 
     action.title("Gerenciamento de Cinema")
     action.geometry("400x250+500+150")
+    action.iconbitmap(r'icon.ico')
     action.mainloop()
 
 def consultar_click(frame):
@@ -95,7 +141,7 @@ def consultar_click(frame):
     # Número
     numero_label = Label(action, text="Número:", font=("Arial", 12))
     numero_label.grid(row=1, column=0, pady=5, sticky=E)
-    numero = Entry(action, font=("Arial", 12))
+    numero = Entry(action, font=("Arial", 12), width=15)
     numero.grid(row=1, column=1, sticky=W)
 
     # Status
@@ -104,18 +150,24 @@ def consultar_click(frame):
     status = Label(action, text="", font=("Arial", 12))
     status.grid(row=2, column=1, sticky=W)
 
+    # Botão Resetar Poltronas
+    resetar_bt = Button(action, bg="gray75", text="Resetar Poltronas", font=("Arial", 12, "bold"), state=DISABLED)
+    resetar_bt["command"] = partial(resetar, numero, resetar_bt)
+    resetar_bt.grid(row=6, column=1, pady=(0, 10), sticky=W)
+
     # Botão Consultar
-    consultar_bt = Button(action, bg="gray75", text="Consultar", font=("Arial", 12))
-    consultar_bt["command"] = partial(consultar, numero, status)
-    consultar_bt.grid(row=5, column=1, pady=10, sticky=W)
+    consultar_bt = Button(action, bg="gray75", text="Consultar", font=("Arial", 12, "bold"))
+    consultar_bt["command"] = partial(consultar, numero, status, resetar_bt)
+    consultar_bt.grid(row=5, column=1, pady=10, ipadx=31, sticky=W)
 
     # Botão Voltar
     voltar = Button(action, bg="gray75", text="Voltar", font=("Arial", 12))
     voltar["command"] = partial(voltar_click, action, 1)
-    voltar.grid(row=6, column=1, sticky=W, ipadx=12)
+    voltar.grid(row=7, column=1, sticky=W, ipadx=47)
 
     action.title("Gerenciamento de Cinema")
-    action.geometry("360x250+500+150")
+    action.geometry("360x290+500+150")
+    action.iconbitmap(r'icon.ico')
     action.mainloop()
 
 def excluir_click(frame):
@@ -153,12 +205,13 @@ def excluir_click(frame):
 
     action.title("Gerenciamento de Cinema")
     action.geometry("360x250+500+150")
+    action.iconbitmap(r'icon.ico')
     action.mainloop()
 
 def show_frame():
     frame = Tk()
 
-    Label(frame, text="Salas", font=("Arial", 24)).grid(row=0, column=0, padx=200, pady=25)
+    Label(frame, text="Salas", font=("Arial", 24)).grid(row=0, column=0, padx=205, pady=25)
 
     #Botão Cadastrar
     cadastrar = Button(frame, text="Cadastrar", font=("Arial", 14))
@@ -186,4 +239,5 @@ def show_frame():
 
     frame.title("Gerenciamento de Cinema")
     frame.geometry("490x450+500+150")
+    frame.iconbitmap(r'icon.ico')
     frame.mainloop()

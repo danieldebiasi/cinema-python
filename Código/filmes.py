@@ -12,15 +12,25 @@ def voltar_click(frame, ctrl):
     else:
         show_frame()
 
-def registrar(frame, titulo, genero, clas, hora, sala):
+def registrar(frame, titulo, genero, clas, hora_h, hora_min, sala):
+    hora = hora_h.get()+":"+hora_min.get()
+
     conn = sqlite3.connect('dados/database.db')
     c = conn.cursor()
-    c.execute('INSERT INTO filmes (titulo, genero, classificacao, horario, sala) VALUES(?, ?, ?, ?, ?)',
-             (titulo.get(), genero.get(), clas.get(), hora.get(), sala.get()))
+    c.execute('SELECT * FROM salas WHERE sala=?', (sala.get()))
+    result = c.fetchone()
 
-    conn.commit()
-    messagebox.showinfo("Cadastro de Filmes", "Filme cadastrado com sucesso!")
-    voltar_click(frame, 1)
+    if result is not None and result[1]=="Livre":
+        c.execute('INSERT INTO filmes (titulo, genero, classificacao, horario, sala) VALUES(?, ?, ?, ?, ?)',
+                 (titulo.get(), genero.get(), clas.get(), hora, sala.get()))
+
+        c.execute('UPDATE salas SET status=?, filme=? WHERE sala=?', ("Em uso", titulo.get(), sala.get()))
+
+        conn.commit()
+        messagebox.showinfo("Cadastro de Filmes", "Filme cadastrado com sucesso!")
+        voltar_click(frame, 1)
+    else:
+        messagebox.showinfo("Erro", "Sala em uso ou inexistente!")
 
 def consultar(titulo, genero, clas, horario, sala):
     genero["text"] = ""
@@ -51,10 +61,17 @@ def encontrar(titulo, genero, clas, horario, sala, excluir):
 def deletar(titulo, genero, clas, horario, sala, excluir):
     conn = sqlite3.connect('dados/database.db')
     c = conn.cursor()
-    c.execute('DELETE FROM filmes WHERE titulo=?', (titulo.get(),))
-    conn.commit()
 
-    messagebox.showinfo("Exclusão de filmes", "Filme excluído com sucesso!")
+    result = messagebox.askyesno("Exclusão de Filmes", "Confirmar exclusão do filme?")
+    if result:
+        c.execute('UPDATE salas SET status=?, filme=? WHERE sala=?', ("Livre", None, sala["text"]))
+        c.execute('DELETE FROM filmes WHERE titulo=?', (titulo.get(),))
+        conn.commit()
+
+        messagebox.showinfo("Exclusão de filmes", "Filme excluído com sucesso!")
+    else:
+        messagebox.showinfo("Exclusão de Filmes", "Exclusão cancelada")
+
     titulo["text"] = ""
     genero["text"] = ""
     clas["text"] = ""
@@ -65,19 +82,19 @@ def deletar(titulo, genero, clas, horario, sala, excluir):
 def cadastrar_click(frame):
     frame.destroy()
     action = Tk()
-    Label(action, text="Cadastrar Filme", font=("Arial", 24)).grid(row=0, column=1, padx=80, pady=20)
+    Label(action, text="Cadastrar Filme", font=("Arial", 24)).grid(row=0, column=1, columnspan=3, ipadx=80, pady=20)
 
     #Título do filme
     titulo_label = Label(action, text="Título:", font=("Arial", 12))
     titulo_label.grid(row=1, column=0, pady=5)
     titulo = Entry(action, font=("Arial", 12))
-    titulo.grid(row=1, column=1, sticky=W+E)
+    titulo.grid(row=1, column=1, columnspan=3, sticky=W+E)
 
     #Gênero do filme
     genero_label = Label(action, text="Gênero:", font=("Arial", 12))
     genero_label.grid(row=2, column=0, pady=(5,10))
     genero = Entry(action, font=("Arial", 12))
-    genero.grid(row=2, column=1, sticky=W+E)
+    genero.grid(row=2, column=1, columnspan=3, sticky=W+E)
 
     #Opções de Classificação
     clas_label = Label(action, text="Idade:", font=("Arial", 12))
@@ -98,18 +115,20 @@ def cadastrar_click(frame):
     #Horário de exibição
     hora_label = Label(action, text="Horário:", font=("Arial", 12))
     hora_label.grid(row=8, column=0, pady=5)
-    hora = Entry(action, font=("Arial", 12))
-    hora.grid(row=8, column=1, sticky=W)
+    hora_h = Spinbox(action, font=("Arial", 12), from_=0, to=23, format="%02.0f", state="readonly", width=2)
+    hora_h.grid(row=8, column=1, sticky=W)
+    hora_min = Spinbox(action, font=("Arial", 12), from_=0, to=59, format="%02.0f", state="readonly", width=2)
+    hora_min.grid(row=8, column=1)
 
     #Sala de Exibição
     sala_label = Label(action, text="Sala:", font=("Arial", 12))
     sala_label.grid(row=9, column=0, pady=(10,5))
     sala = Entry(action, font=("Arial", 12))
-    sala.grid(row=9, column=1, sticky=W)
+    sala.grid(row=9, column=1, columnspan=3, sticky=W)
 
     #Botão confirmar
     confirmar = Button(action, bg="gray75", text="Confirmar", font=("Arial", 12))
-    confirmar["command"] = partial(registrar, action, titulo, genero, opt, hora, sala)
+    confirmar["command"] = partial(registrar, action, titulo, genero, opt, hora_h, hora_min, sala)
     confirmar.grid(row=10, column=1, pady=5, sticky=W)
 
     #Botão voltar
@@ -118,7 +137,8 @@ def cadastrar_click(frame):
     voltar.grid(row=11, column=1, sticky=W, ipadx=3)
 
     action.title("Gerenciamento de Cinema")
-    action.geometry("490x400+500+150")
+    action.geometry("490x430+500+150")
+    action.iconbitmap(r'icon.ico')
     action.mainloop()
 
 def consultar_click(frame):
@@ -167,7 +187,8 @@ def consultar_click(frame):
     voltar.grid(row=7, column=1, sticky=W, ipadx=12)
 
     action.title("Gerenciamento de Cinema")
-    action.geometry("490x330+500+150")
+    action.geometry("490x340+500+150")
+    action.iconbitmap(r'icon.ico')
     action.mainloop()
 
 def excluir_click(frame):
@@ -222,7 +243,8 @@ def excluir_click(frame):
     voltar.grid(row=7, column=1, sticky=W, ipadx=8)
 
     action.title("Gerenciamento de Cinema")
-    action.geometry("520x330+500+150")
+    action.geometry("520x340+500+150")
+    action.iconbitmap(r'icon.ico')
     action.mainloop()
 
 def show_frame():
@@ -256,4 +278,5 @@ def show_frame():
 
     frame.title("Gerenciamento de Cinema")
     frame.geometry("490x450+500+150")
+    frame.iconbitmap(r'icon.ico')
     frame.mainloop()
