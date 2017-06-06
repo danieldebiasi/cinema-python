@@ -90,7 +90,7 @@ def sel_poltrona(frame, sala, selecionada):
     cancelar.grid(row=10, column=5, columnspan=2, padx=3, pady=(20, 0), ipadx=10, sticky=W)
 
     action.geometry("670x610+500+210")
-    action.iconbitmap(r'icon.ico')
+    action.iconbitmap(r'icones/icon.ico')
 
 def verifica_poltrona(conn, sala, pol):
     c = conn.cursor()
@@ -232,6 +232,6 @@ def show_frame():
 
     frame.title("Gerenciamento de Cinema")
     frame.geometry("580x480+500+200")
-    frame.iconbitmap(r'icon.ico')
+    frame.iconbitmap(r'icones/icon.ico')
 
     frame.mainloop()

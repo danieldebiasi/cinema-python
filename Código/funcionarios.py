@@ -142,7 +142,7 @@ def cadastrar_click(frame):
 
     action.title("Gerenciamento de Cinema")
     action.geometry("490x380+500+150")
-    action.iconbitmap(r'icon.ico')
+    action.iconbitmap(r'icones/icon.ico')
     action.mainloop()
 
 def consultar_click(frame):
@@ -187,7 +187,7 @@ def consultar_click(frame):
 
     action.title("Gerenciamento de Cinema")
     action.geometry("490x310+500+150")
-    action.iconbitmap(r'icon.ico')
+    action.iconbitmap(r'icones/icon.ico')
     action.mainloop()
 
 def excluir_click(frame):
@@ -237,7 +237,7 @@ def excluir_click(frame):
 
     action.title("Gerenciamento de Cinema")
     action.geometry("520x290+500+150")
-    action.iconbitmap(r'icon.ico')
+    action.iconbitmap(r'icones/icon.ico')
     action.mainloop()
 
 def show_frame():
@@ -271,5 +271,5 @@ def show_frame():
 
     frame.title("Gerenciamento de Cinema")
     frame.geometry("490x450+500+150")
-    frame.iconbitmap(r'icon.ico')
+    frame.iconbitmap(r'icones/icon.ico')
     frame.mainloop()

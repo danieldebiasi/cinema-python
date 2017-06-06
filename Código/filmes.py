@@ -15,22 +15,25 @@ def voltar_click(frame, ctrl):
 def registrar(frame, titulo, genero, clas, hora_h, hora_min, sala):
     hora = hora_h.get()+":"+hora_min.get()
 
-    conn = sqlite3.connect('dados/database.db')
-    c = conn.cursor()
-    c.execute('SELECT * FROM salas WHERE sala=?', (sala.get()))
-    result = c.fetchone()
-
-    if result is not None and result[1]=="Livre":
-        c.execute('INSERT INTO filmes (titulo, genero, classificacao, horario, sala) VALUES(?, ?, ?, ?, ?)',
-                 (titulo.get(), genero.get(), clas.get(), hora, sala.get()))
-
-        c.execute('UPDATE salas SET status=?, filme=? WHERE sala=?', ("Em uso", titulo.get(), sala.get()))
-
-        conn.commit()
-        messagebox.showinfo("Cadastro de Filmes", "Filme cadastrado com sucesso!")
-        voltar_click(frame, 1)
+    if titulo.get() == "" or genero.get() == "" or clas.get() == " " or sala.get() == "":
+        messagebox.showinfo("Erro", "Preencha todas as informações!")
     else:
-        messagebox.showinfo("Erro", "Sala em uso ou inexistente!")
+        conn = sqlite3.connect('dados/database.db')
+        c = conn.cursor()
+        c.execute('SELECT * FROM salas WHERE sala=?', (sala.get()))
+        result = c.fetchone()
+
+        if result is not None and result[1]=="Livre":
+            c.execute('INSERT INTO filmes (titulo, genero, classificacao, horario, sala) VALUES(?, ?, ?, ?, ?)',
+                     (titulo.get(), genero.get(), clas.get(), hora, sala.get()))
+
+            c.execute('UPDATE salas SET status=?, filme=? WHERE sala=?', ("Em uso", titulo.get(), sala.get()))
+
+            conn.commit()
+            messagebox.showinfo("Cadastro de Filmes", "Filme cadastrado com sucesso!")
+            voltar_click(frame, 1)
+        else:
+            messagebox.showinfo("Erro", "Sala em uso ou inexistente!")
 
 def consultar(titulo, genero, clas, horario, sala):
     genero["text"] = ""
@@ -138,7 +141,7 @@ def cadastrar_click(frame):
 
     action.title("Gerenciamento de Cinema")
     action.geometry("490x430+500+150")
-    action.iconbitmap(r'icon.ico')
+    action.iconbitmap(r'icones/icon.ico')
     action.mainloop()
 
 def consultar_click(frame):
@@ -188,7 +191,7 @@ def consultar_click(frame):
 
     action.title("Gerenciamento de Cinema")
     action.geometry("490x340+500+150")
-    action.iconbitmap(r'icon.ico')
+    action.iconbitmap(r'icones/icon.ico')
     action.mainloop()
 
 def excluir_click(frame):
@@ -244,7 +247,7 @@ def excluir_click(frame):
 
     action.title("Gerenciamento de Cinema")
     action.geometry("520x340+500+150")
-    action.iconbitmap(r'icon.ico')
+    action.iconbitmap(r'icones/icon.ico')
     action.mainloop()
 
 def show_frame():
@@ -278,5 +281,5 @@ def show_frame():
 
     frame.title("Gerenciamento de Cinema")
     frame.geometry("490x450+500+150")
-    frame.iconbitmap(r'icon.ico')
+    frame.iconbitmap(r'icones/icon.ico')
     frame.mainloop()

@@ -77,7 +77,7 @@ def deletar(numero, status, excluir):
     excluir["state"] = DISABLED
 
 def encontrar(numero, status, excluir):
-    if consultar(numero, status) == 1:
+    if consultar(numero, status, excluir) == 1:
         excluir["state"] = NORMAL
     else:
         excluir["state"] = DISABLED
@@ -129,7 +129,7 @@ def cadastrar_click(frame):
 
     action.title("Gerenciamento de Cinema")
     action.geometry("400x250+500+150")
-    action.iconbitmap(r'icon.ico')
+    action.iconbitmap(r'icones/icon.ico')
     action.mainloop()
 
 def consultar_click(frame):
@@ -167,7 +167,7 @@ def consultar_click(frame):
 
     action.title("Gerenciamento de Cinema")
     action.geometry("360x290+500+150")
-    action.iconbitmap(r'icon.ico')
+    action.iconbitmap(r'icones/icon.ico')
     action.mainloop()
 
 def excluir_click(frame):
@@ -205,7 +205,7 @@ def excluir_click(frame):
 
     action.title("Gerenciamento de Cinema")
     action.geometry("360x250+500+150")
-    action.iconbitmap(r'icon.ico')
+    action.iconbitmap(r'icones/icon.ico')
     action.mainloop()
 
 def show_frame():
@@ -239,5 +239,5 @@ def show_frame():
 
     frame.title("Gerenciamento de Cinema")
     frame.geometry("490x450+500+150")
-    frame.iconbitmap(r'icon.ico')
+    frame.iconbitmap(r'icones/icon.ico')
     frame.mainloop()

@@ -43,6 +43,6 @@ def show_frame():
     #Loop
     frame.title("Gerenciamento de Cinema")
     frame.geometry("490x400+500+150")
-    frame.iconbitmap(r'icon.ico')
+    frame.iconbitmap(r'icones/icon.ico')
 
     frame.mainloop()

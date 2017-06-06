@@ -37,7 +37,7 @@ def show_frame(frame):
 
 frame = Tk()
 frame.title("Gerenciamento de Cinema")
-frame.iconbitmap(r'icon.ico')
+frame.iconbitmap(r'icones/icon.ico')
 frame.geometry("300x200+500+150")
 show_frame(frame)
 
