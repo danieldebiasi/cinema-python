@@ -15,7 +15,7 @@ def registrar(frame, nome, rg, entrada_h, entrada_min, saida_h, saida_min, user,
     if nome.get()=="" or rg.get()=="" or user.get()=="" or pwd.get()=="":
         messagebox.showinfo("Erro", "Preencha todas as informações!")
     else:
-        if not nome.get().isalpha() or not rg.get().isdigit():
+        if not all(x.isalpha() or x.isspace() for x in nome.get()) or not rg.get().isdigit():
             messagebox.showinfo("Erro", "Nome ou RG inválido!")
         else:
             conn = sqlite3.connect('dados/database.db')
@@ -29,7 +29,7 @@ def registrar(frame, nome, rg, entrada_h, entrada_min, saida_h, saida_min, user,
                 saida = saida_h.get()+":"+saida_min.get()
 
                 c.execute('INSERT INTO funcionarios (nome, rg, entrada, saida) VALUES(?, ?, ?, ?)',
-                          (nome.get(), rg.get(), entrada, saida))
+                          (nome.get().upper(), rg.get(), entrada, saida))
                 conn.commit()
 
                 c.execute('INSERT INTO usuarios (user, password, acesso, rg) VALUES(?, ?, ?, ?)',

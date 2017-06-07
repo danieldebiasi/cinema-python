@@ -42,7 +42,6 @@ def set_valor(opt, valor):
 def on_select(list_filmes, sessao, sala, poltronas, poltrona_sel, event):
     sessao['text'] = ""
     sala['text'] = ""
-    poltrona_sel["state"] = NORMAL
 
     sel = str((list_filmes.get(list_filmes.curselection())))
     conn = sqlite3.connect('dados/database.db')
@@ -51,6 +50,8 @@ def on_select(list_filmes, sessao, sala, poltronas, poltrona_sel, event):
     result = c.fetchone()
     sessao["text"] = result[3]
     sala["text"] = result[4]
+    if sessao["text"] != "":
+        poltrona_sel["state"] = NORMAL
 
     c.execute('SELECT livres FROM poltronas WHERE sala=?', (result[4],))
     result = c.fetchone()

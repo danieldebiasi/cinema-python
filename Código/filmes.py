@@ -25,7 +25,7 @@ def registrar(frame, titulo, genero, clas, hora_h, hora_min, sala):
 
         if result is not None and result[1]=="Livre":
             c.execute('INSERT INTO filmes (titulo, genero, classificacao, horario, sala) VALUES(?, ?, ?, ?, ?)',
-                     (titulo.get(), genero.get(), clas.get(), hora, sala.get()))
+                     (titulo.get().upper(), genero.get().upper(), clas.get(), hora, sala.get()))
 
             c.execute('UPDATE salas SET status=?, filme=? WHERE sala=?', ("Em uso", titulo.get(), sala.get()))
 
@@ -43,7 +43,7 @@ def consultar(titulo, genero, clas, horario, sala):
 
     conn = sqlite3.connect('dados/database.db')
     c = conn.cursor()
-    c.execute('SELECT * FROM filmes WHERE titulo=?', (titulo.get(),))
+    c.execute('SELECT * FROM filmes WHERE titulo=?', (titulo.get().upper(),))
     result = c.fetchone()
     if result is not None:
         genero["text"] = result[1]
@@ -68,7 +68,7 @@ def deletar(titulo, genero, clas, horario, sala, excluir):
     result = messagebox.askyesno("Exclusão de Filmes", "Confirmar exclusão do filme?")
     if result:
         c.execute('UPDATE salas SET status=?, filme=? WHERE sala=?', ("Livre", None, sala["text"]))
-        c.execute('DELETE FROM filmes WHERE titulo=?', (titulo.get(),))
+        c.execute('DELETE FROM filmes WHERE titulo=?', (titulo.get().upper(),))
         conn.commit()
 
         messagebox.showinfo("Exclusão de filmes", "Filme excluído com sucesso!")

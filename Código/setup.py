@@ -8,9 +8,8 @@ from cx_Freeze import setup, Executable
 
 setup(
 name = "Cinema",
-version = "0.2",
+version = "0.3",
 description = "Sistema de Gerenciamento de Cinema",
-author = "Daniel Rodrigues De Biasi",
 options = {"build_exe": {
     'packages': ["functools","sqlite3","tkinter", "atendente", "filmes", "funcionarios", "gestor", "login_events", "salas"],
     'include_files':[r"C:\Users\danie\AppData\Local\Programs\Python\Python36-32\DLLs\tcl86t.dll",
